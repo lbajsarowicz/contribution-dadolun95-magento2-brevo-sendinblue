@@ -9,6 +9,8 @@ namespace Dadolun\SibOrderSync\Block\Adminhtml\Config;
 
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
+use Magento\Backend\Block\Template\Context;
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
 
 /**
  * Class SyncOrders
@@ -18,17 +20,21 @@ class SyncOrders extends Field
 {
 
     /**
-     * Set template to itself
+     * Initialize the sync button template.
      *
-     * @return $this|Field
+     * @param Context $context
+     * @param array $data
+     * @param SecureHtmlRenderer|null $secureRenderer
      */
-    protected function _prepareLayout()
-    {
-        parent::_prepareLayout();
-        if (!$this->getTemplate()) {
-            $this->setTemplate('Dadolun_SibOrderSync::config/sync-orders.phtml');
+    public function __construct(
+        Context $context,
+        array $data = [],
+        ?SecureHtmlRenderer $secureRenderer = null
+    ) {
+        if (empty($data['template'])) {
+            $data['template'] = 'Dadolun_SibOrderSync::config/sync-orders.phtml';
         }
-        return $this;
+        parent::__construct($context, $data, $secureRenderer);
     }
 
     /**

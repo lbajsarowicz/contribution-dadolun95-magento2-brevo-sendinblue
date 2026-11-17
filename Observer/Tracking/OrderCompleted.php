@@ -47,8 +47,7 @@ class OrderCompleted implements ObserverInterface
         CheckoutSession $checkoutSession,
         ImageHelper $imageHelper,
         CartHelper $cartHelper
-    )
-    {
+    ) {
         $this->checkoutSession = $checkoutSession;
         $this->imageHelper = $imageHelper;
         $this->cartHelper = $cartHelper;
@@ -66,6 +65,7 @@ class OrderCompleted implements ObserverInterface
              */
             $order = $observer->getData("order");
             $customer = $order->getCustomer();
+            $orderItemsData = [];
             foreach ($order->getAllVisibleItems() as $orderItem) {
                 /**
                  * @var Product $orderProduct
@@ -85,20 +85,21 @@ class OrderCompleted implements ObserverInterface
             $orderData = [
                 'email' => $customer ? $customer->getEmail() : $order->getBillingAddress()->getEmail(),
                 'event' => 'order_completed',
-                'properties' => array(
+                'properties' => [
                     'FIRSTNAME' => $customer ? $customer->getFirstname() : $order->getBillingAddress()->getFirstname(),
                     'LASTNAME' => $customer ? $customer->getLastname() : $order->getBillingAddress()->getLastname()
-                ),
-                'eventdata' => array(
+                ],
+                'eventdata' => [
                     'id' => 'cart:' . $order->getQuoteId(),
                     'data' => [
                         'currency' => $order->getOrderCurrencyCode(),
                         'items' => $orderItemsData
                     ]
-                )
+                ]
             ];
             $this->checkoutSession->setSibPurchaseData($orderData);
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         return $this;
     }
